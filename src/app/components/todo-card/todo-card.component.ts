@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, effect } from '@angular/core';
 import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,15 @@ export class TodoCardComponent implements OnInit {
 
   todosList = computed(() => this.todosSignal());
 
+  constructor() {
+    effect(() => {
+      console.log(
+        'SIGNAL FOI ATUALIZADO',
+        this.todosSignalsService.todosState()
+      );
+    });
+  }
+
   ngOnInit(): void {
     this.getTodosInLocalStorage();
   }
@@ -52,6 +61,7 @@ export class TodoCardComponent implements OnInit {
       this.todosSignal.mutate((todos) => {
         const todoSelected = todos.find((todo) => todo?.id === todoId) as Todo;
         todoSelected && (todoSelected.done = true);
+        this.saveTodosInLocalStorage();
       });
     }
   }
