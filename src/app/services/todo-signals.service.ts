@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
 import { Todo } from '../models/model/todo.model';
-import { TodoKeyLocalStorage } from '../models/enum/todoKeyLocalStorage';
+import { TodoKeyLocalStorage } from '../models/enum/TodoKeyLocalStorage';
 
 @Injectable({
   providedIn: 'root',
