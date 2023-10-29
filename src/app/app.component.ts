@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { TodoCardComponent } from './components/todo-card/todo-card.component';
 import { SchoolData, SchoolService } from './services/school.service';
-import { Observable, zip, of, map, from, filter } from 'rxjs';
+import { Observable, zip, of, map, from, filter, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +29,8 @@ export class AppComponent implements OnInit {
     { name: 'Sara', age: 40, profession: 'FE Developer' },
   ]);
 
+  private studentUserId = '2';
+
   private zipSchoolResponse$ = zip(
     this.getStudentsData(),
     this.getTeachersData()
@@ -40,7 +42,8 @@ export class AppComponent implements OnInit {
     // this.getSchoolData();
     // this.getMultipliedAges();
     // this.getPeopleProfession();
-    this.getDeveloperFilter();
+    // this.getDeveloperFilter();
+    this.handleFindStudentById();
   }
 
   getMultipliedAges(): void {
@@ -73,6 +76,25 @@ export class AppComponent implements OnInit {
         console.log('TEACHERS:', response[1]);
       },
     });
+  }
+
+  handleFindStudentById(): void {
+    this.getStudentsData()
+      .pipe(
+        switchMap((students) =>
+          this.findStudentById(students, this.studentUserId)
+        )
+      )
+      .subscribe({
+        next: (response) => console.log('STUDENT:', response),
+      });
+  }
+
+  findStudentById(
+    students: Array<SchoolData>,
+    userId: string
+  ): Observable<SchoolData | undefined> {
+    return of(students.find((student) => student.id === userId));
   }
 
   private getStudentsData(): Observable<Array<SchoolData>> {
