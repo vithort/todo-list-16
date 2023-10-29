@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { TodoCardComponent } from './components/todo-card/todo-card.component';
 import { SchoolData, SchoolService } from './services/school.service';
-import { Observable, zip, of, map, from } from 'rxjs';
+import { Observable, zip, of, map, from, filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +25,8 @@ export class AppComponent implements OnInit {
     { name: 'Vithor Carvalho', age: 20, profession: 'FE Developer' },
     { name: 'Cesar', age: 25, profession: 'UX' },
     { name: 'Caimi', age: 30, profession: 'BE Developer' },
+    { name: 'Eros', age: 35, profession: 'BE Developer' },
+    { name: 'Sara', age: 40, profession: 'FE Developer' },
   ]);
 
   private zipSchoolResponse$ = zip(
@@ -37,7 +39,8 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // this.getSchoolData();
     // this.getMultipliedAges();
-    this.getPeopleProfession();
+    // this.getPeopleProfession();
+    this.getDeveloperFilter();
   }
 
   getMultipliedAges(): void {
@@ -50,6 +53,17 @@ export class AppComponent implements OnInit {
     this.peopleData.pipe(map((people) => people.profession)).subscribe({
       next: (response) => console.log('PROFISSAO:', response),
     });
+  }
+
+  getDeveloperFilter(): void {
+    this.peopleData
+      .pipe(
+        filter((people) => people.profession === 'FE Developer'),
+        map((people) => people.name)
+      )
+      .subscribe({
+        next: (response) => console.log('FE Developer:', response),
+      });
   }
 
   getSchoolData(): void {
